@@ -4,7 +4,7 @@ Welcome to the Secure Data Sanitization and File Recovery System developer guide
 
 ---
 
-## 🛠️ Project Structure Overview
+## Project Structure Overview
 
 This repository is split into two primary components:
 
@@ -15,7 +15,7 @@ This repository is split into two primary components:
 
 ---
 
-## ⚙️ Prerequisites
+## Prerequisites
 
 Before you start, make sure you have the following installed on your machine:
 - **Node.js** (v16+ recommended) and **npm** for the frontend.
@@ -25,7 +25,7 @@ Before you start, make sure you have the following installed on your machine:
 
 ---
 
-## 🚀 Setting Up the Backend
+## Setting Up the Backend
 
 The backend is a FastAPI server located in the `app/` folder. Since the `requirements.txt` might be missing some modules or empty, you will need to install the dependencies based on imports.
 
@@ -61,7 +61,7 @@ You can also visit `http://localhost:8000/docs` to view the interactive API docu
 
 ---
 
-## 💻 Setting Up the Frontend
+## Setting Up the Frontend
 
 The frontend is a Vite + React application.
 
@@ -90,7 +90,7 @@ The application should start automatically, usually accessible at `http://localh
 
 ---
 
-## 🔍 How it Works (Under the Hood)
+## How it Works (Under the Hood)
 
 - **API Flow:** The React frontend (on port `5173`) makes HTTP requests to the FastAPI backend (on port `8000`). Make sure your CORS configurations in `app/main.py` allow for this (it currently allows all origins `*`).
 - **Disk Interactions:** Endpoints like `/api/drives` rely on `subprocess.run` calling Windows `powershell` commands (`Get-Disk`, `Get-Volume`). Ensure your local development setup permits executing these scripts.
@@ -99,7 +99,7 @@ The application should start automatically, usually accessible at `http://localh
 
 ---
 
-## 💡 Troubleshooting
+## Troubleshooting
 
 - **Powershell Commands Failing:** If your `Get-Disk` command fails, ensure you are running the backend in a terminal that has Administrator privileges, and ensure your system allows PowerShell script execution.
 - **Port In Use:** If `8000` or `5173` are in use, specify a custom port:
