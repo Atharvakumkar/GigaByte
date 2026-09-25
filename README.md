@@ -1601,3 +1601,39 @@ The goal is to provide an **evidence-driven, measurable, and verifiable workflow
 # 📄 License
 
 This project is developed for educational, research, and **Smart India Hackathon (SIH) 2026** prototype purposes.
+
+# 🚀 How to Run the Project
+
+This project consists of a FastAPI backend and a React (Vite) frontend.
+
+## 1. Start the Backend (FastAPI)
+
+1. Open a terminal in the root project directory.
+2. Activate the Python virtual environment:
+   - **Windows:** `venv\Scripts\activate`
+   - **Linux/Mac:** `source venv/bin/activate`
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. Run the FastAPI development server:
+   ```bash
+   uvicorn app.main:app --reload
+   ```
+5. The API will now be running at `http://127.0.0.1:8000`.
+
+## 2. Start the Frontend (React GUI)
+
+1. Open a **new** terminal window and navigate to the frontend directory:
+   ```bash
+   cd SIH-GUI/secureerase-sih
+   ```
+2. Install the Node dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the Vite development server:
+   ```bash
+   npm run dev
+   ```
+4. The frontend will be accessible at `http://localhost:5173`. Open this URL in your browser to interact with the application.

@@ -27,7 +27,7 @@ Before you start, make sure you have the following installed on your machine:
 
 ## 🚀 Setting Up the Backend
 
-The backend is a FastAPI server located in the `app/` folder. Since the `requirements.txt` might be missing some modules or empty, you will need to install the dependencies based on imports.
+The backend is a FastAPI server located in the `app/` folder.
 
 ### 1. Create and Activate a Virtual Environment
 It is highly recommended to use a virtual environment to manage dependencies.
@@ -42,10 +42,10 @@ venv\Scripts\activate
 ```
 
 ### 2. Install Dependencies
-You'll need `fastapi`, `uvicorn` (the ASGI server), and `python-multipart` (for file uploads):
+Install all required Python packages (including `fastapi`, `uvicorn`, and `pydantic`) using the `requirements.txt` file:
 
 ```bash
-pip install fastapi uvicorn pydantic python-multipart
+pip install -r requirements.txt
 ```
 
 ### 3. Run the Backend Server

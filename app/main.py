@@ -8,8 +8,8 @@ from pydantic import BaseModel
 import os
 
 # Import our unified engine and validator
-from recovery.engine import RecoveryEngine
-from recovery.validator import FileValidator
+from .recovery.engine import RecoveryEngine
+from .recovery.validator import FileValidator
 
 app = FastAPI(title="SIH 2026 Data Recovery API")
 
