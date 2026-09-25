@@ -1252,7 +1252,7 @@ Potential future applications include:
 
 ---
 
-# ⭐ PROJECT UNIQUE SELLING POINTS
+# PROJECT UNIQUE SELLING POINTS
 
 ## 1. Primary USP
 
@@ -1602,8 +1602,7 @@ The goal is to provide an **evidence-driven, measurable, and verifiable workflow
 
 This project is developed for educational, research, and **Smart India Hackathon (SIH) 2026** prototype purposes.
 
-<<<<<<< HEAD
-# 🚀 How to Run the Project
+# How to Run the Project
 
 This project consists of a FastAPI backend and a React (Vite) frontend.
 
@@ -1747,4 +1746,4 @@ The application should start automatically, usually accessible at `http://localh
 - **Port In Use:** If `8000` or `5173` are in use, specify a custom port:
   - Backend: `uvicorn app.main:app --reload --port 8080`
   - Frontend: `npm run dev -- --port 3000`
->>>>>>> db0877248f4c80a9d66c915f276efb4d097539d6
+
