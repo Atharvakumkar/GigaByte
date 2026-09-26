@@ -1,0 +1,14 @@
+{
+    "target": "test.img",
+    "artifact_count": 2,
+    "artifacts": [
+        {
+            "id": 1,
+            "sha256": "hash1"
+        },
+        {
+            "id": 2,
+            "sha256": "hash2"
+        }
+    ]
+}
