@@ -161,63 +161,450 @@ under the defined verification procedure.
 ==================================================
 ```
 
-## 10. Impact
+---
 
-- **Reduces tool fragmentation** — one platform instead of separate erasure and recovery tools.
-- **Improves auditability** — every sanitization claim is backed by a verifiable, tamper-evident record.
-- **Supports safe data lifecycle management** — organizations can prove data was destroyed before reuse or disposal of storage.
-- **Speeds up forensic investigations** — combined filesystem + carving recovery increases artifact recovery rate from a single pass.
+# SECURITY & SAFETY BOUNDARY
 
-## 11. Technology Stack
+The MVP should operate on **controlled test disk images by default**.
 
-| Layer | Technology |
-|---|---|
-| Digital Forensics | The Sleuth Kit (`mmls`, `fsstat`, `fls`, `istat`) |
-| File Recovery | Signature/magic-byte scanning, structural parsing, raw carving |
-| Security | SHA-256, hash-chained audit log, blockchain anchoring (testnet) |
-| Backend | Python, FastAPI |
-| Frontend | React (Vite) |
-| OS (current build) | Windows (PowerShell-based drive detection); cross-platform planned |
+## Mandatory Safety Rules
 
-## 12. Research & References
-
-1. *Forensic Science International: Digital Investigation* (2023) — Identification of data wiping tools based on deletion patterns in ReFS `$Logfile`.
-2. *arXiv* (2026) — Byte-level generative predictions for forensic multimedia carving.
-3. *CUSTOS* — Toward Forensic-Ready Zero Trust at the Capture-Containment Boundary.
-4. The Sleuth Kit (TSK) — official documentation and developer guide.
-5. NIST Special Publication 800-88 Rev. 1 — Guidelines for Media Sanitization.
-
-## 13. Future Enhancements
-
-- Cross-platform drive detection and physical-device sanitization (with ATA Secure Erase / NVMe Format support)
-- Additional filesystem and file-format support
-- AI/ML-assisted artifact classification and recovery prioritization
-- Parallel carving for large disk images
-- Multi-user investigator workflows and case management
-- Enterprise-scale reporting and cloud-based investigation support
+- Never automatically target system disks.
+- Never automatically target `/dev/sda`.
+- Never automatically target `/dev/nvme*`.
+- Destructive operations require explicit confirmation.
+- Display the target path before sanitization.
+- Display the SHA-256 hash before sanitization.
+- Use controlled test images for destructive demonstrations.
+- Do not perform destructive operations on real user data.
 
 ---
 
-# Developer Setup Guide
+# ️ SSD / NVMe Limitation
 
-## Project Structure
+The prototype should not claim universal or permanent deletion, particularly for:
 
+- SSD
+- NVMe
+- Flash-based storage
+
+For physical storage types, the MVP should primarily demonstrate:
+
+```text
+MEDIA CLASSIFICATION
+        +
+METHOD RECOMMENDATION
 ```
-├── app/                      # FastAPI backend
-└── SIH-GUI/secureerase-sih/  # React (Vite) frontend
+
+rather than automatically wiping real physical devices.
+
+---
+
+# AI/ML Scope
+
+AI/ML is intentionally **not included in the working MVP** due to the short development window.
+
+It can be presented as a future enhancement.
+
+Potential future applications include:
+
+- Intelligent artifact classification
+- Advanced recovery prioritization
+- Fragmented-file prediction
+- Automated evidence classification
+- Anomaly detection
+- Recovery success prediction
+
+---
+
+# ⭐ PROJECT UNIQUE SELLING POINTS
+
+## 1. Primary USP
+
+> **Don't just erase data. Prove what was recoverable before sanitization — and prove what remains afterward.**
+
+---
+
+## 2. Explainable Recovery Confidence
+
+Recovery confidence is supported by understandable forensic evidence such as:
+
+- Valid file signatures
+- Structural checks
+- Parser validation
+- Filesystem evidence
+
+---
+
+## 3. Recoverability Score
+
+A project-defined metric that describes how recoverable an artifact is rather than simply reporting that a file was found.
+
+---
+
+## 4. Before/After Verification
+
+The system establishes a recovery baseline before sanitization and compares it with post-sanitization recovery results.
+
+---
+
+## 5. Tamper-Evident Audit Trail
+
+Hash-chained audit events make changes to recorded workflow information detectable.
+
+This is an audit-integrity mechanism and **not blockchain**.
+
+---
+
+## 6. Automated Reporting & Certificate
+
+The system generates a consolidated result containing:
+
+- Target information
+- Sanitization details
+- Recovery findings
+- Verification outcome
+- Audit integrity
+- Certificate/report
+
+---
+
+# MVP Scope
+
+The working MVP focuses on:
+
+### Team 1
+
+- File sanitization
+- Folder sanitization
+- Controlled disk-image sanitization
+- Storage-media classification
+- Sanitization method recommendation
+- Safety controls
+- SHA-256 capture
+- Sanitization reporting
+
+### Team 2
+
+- Sleuth Kit integration
+- Filesystem analysis
+- Deleted-file identification
+- Deleted-file recovery
+- Raw file carving
+- JPEG recovery
+- PNG recovery
+- PDF recovery
+- DOCX recovery
+- ZIP recovery
+- Fragmented-file reconstruction
+- Recovery validation
+- Recovery metadata
+
+### Team 3
+
+- Explainable recovery confidence
+- Recoverability Score
+- Pre-sanitization baseline
+- Post-sanitization comparison
+- Sanitization verification
+- PASS/FAIL determination
+- Hash-chained audit trail
+- Audit integrity verification
+- Automated forensic report
+- Sanitization certificate
+
+---
+
+# MVP Limitations
+
+The prototype does not claim:
+
+- Universal file recovery
+- Guaranteed fragmented-file recovery
+- Universal filesystem support
+- Permanent deletion on all storage technologies
+- Automatic wiping of real physical system drives
+- Commercial forensic-suite capabilities
+- AI/ML-based recovery during the MVP
+
+---
+
+# Future Enhancements
+
+Possible future improvements include:
+
+- More filesystem support
+- More file formats
+- Advanced fragmented-file reconstruction
+- Advanced file parsers
+- Parallel carving
+- Large-image optimization
+- Duplicate artifact detection
+- Advanced evidence visualization
+- Advanced recovery scoring
+- AI/ML-assisted artifact classification
+- Additional storage sanitization standards
+- Enterprise-scale reporting
+- Cloud-based forensic investigation
+- Case management
+- Multi-user investigator workflows
+
+---
+
+# ️ Technology Stack
+
+The prototype may use the following technologies:
+
+## Operating System
+
+- Linux
+- Ubuntu
+- WSL2
+
+## Digital Forensics
+
+- The Sleuth Kit
+- `mmls`
+- `fsstat`
+- `fls`
+- `istat`
+
+## File Recovery
+
+- Raw byte scanning
+- File signatures
+- Magic bytes
+- File structure analysis
+- File carving
+- File reconstruction
+- File validation
+
+## Security
+
+- SHA-256
+- Hash-chained audit logs
+- Integrity verification
+
+## Application
+
+- Unified GUI
+- Backend/API
+- JSON-based metadata
+- Automated reporting
+
+---
+
+# Evidence & Audit Model
+
+The system maintains evidence throughout the entire workflow.
+
+```text
+TARGET
+  │
+  ├── Target Path
+  ├── Target Type
+  └── SHA-256
+        │
+        ▼
+RECOVERY EVIDENCE
+  │
+  ├── File Type
+  ├── Offset
+  ├── Size
+  ├── Recovery Method
+  ├── Validation
+  └── Hash
+        │
+        ▼
+SANITIZATION RESULT
+  │
+  ├── Method
+  ├── Status
+  └── Timestamp
+        │
+        ▼
+POST-RECOVERY EVIDENCE
+        │
+        ▼
+COMPARISON
+        │
+        ▼
+VERIFICATION
+        │
+        ▼
+AUDIT TRAIL
+        │
+        ▼
+FINAL REPORT
 ```
 
-## Prerequisites
+---
 
-- Node.js v16+ and npm
-- Python 3.8+
-- Windows OS with PowerShell (current backend uses `Get-Disk` / `Get-Volume` for drive scanning)
-- Administrator privileges (required for raw drive recovery endpoints)
+# Final System Concept
 
-## Backend Setup
+The entire platform can be summarized as:
+
+```text
+┌─────────────────────────────────────────────────────────────┐
+│                  INTEGRATED FORENSIC TOOL                   │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│                    CONTROLLED TEST IMAGE                   │
+│                              │                              │
+│                              ▼                              │
+│                       FILE RECOVERY                         │
+│                              │                              │
+│                    ┌─────────┴─────────┐                    │
+│                    │                   │                    │
+│                    ▼                   ▼                    │
+│               SLEUTH KIT          RAW CARVING               │
+│                    │                   │                    │
+│                    └─────────┬─────────┘                    │
+│                              ▼                              │
+│                         VALIDATION                           │
+│                              │                              │
+│                              ▼                              │
+│                    RECOVERY CONFIDENCE                      │
+│                              │                              │
+│                              ▼                              │
+│                         BASELINE                            │
+│                              │                              │
+│                              ▼                              │
+│                       SANITIZATION                          │
+│                              │                              │
+│                              ▼                              │
+│                    RECOVERY AGAIN                           │
+│                              │                              │
+│                              ▼                              │
+│                    BEFORE / AFTER                           │
+│                       COMPARISON                             │
+│                              │                              │
+│                              ▼                              │
+│                         VERIFY                              │
+│                              │                              │
+│                              ▼                              │
+│                    AUDIT + REPORT                           │
+│                              │                              │
+│                              ▼                              │
+│                  SANITIZATION CERTIFICATE                   │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+# ‍ Team Responsibilities Summary
+
+```text
+┌─────────────────────────────────────────────────────────────┐
+│                         TEAM 1                              │
+│                DATA SANITIZATION                            │
+│                                                             │
+│  FILE ERASE → FOLDER ERASE → IMAGE SANITIZATION            │
+│              → MEDIA CLASSIFICATION                        │
+│              → METHOD RECOMMENDATION                        │
+└───────────────────────────┬─────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│                         TEAM 2                              │
+│                     FILE RECOVERY                            │
+│                                                             │
+│  ANALYZE → FIND → RECOVER → CARVE → RECONSTRUCT             │
+│                     → VALIDATE                              │
+└───────────────────────────┬─────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│                         TEAM 3                              │
+│             FORENSIC INTELLIGENCE & VERIFICATION             │
+│                                                             │
+│  SCORE → BASELINE → COMPARE → VERIFY → AUDIT → REPORT       │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+# Final Outcome
+
+The final prototype brings all three teams together into one closed-loop forensic platform.
+
+```text
+             RECOVER WHAT EXISTS
+                     │
+                     ▼
+             MEASURE RECOVERY
+                     │
+                     ▼
+             RECORD BASELINE
+                     │
+                     ▼
+              SANITIZE DATA
+                     │
+                     ▼
+            ATTEMPT RECOVERY
+                     │
+                     ▼
+             COMPARE RESULTS
+                     │
+                     ▼
+              VERIFY RESULT
+                     │
+                     ▼
+            PROVE THE OUTCOME
+                     │
+                     ▼
+          GENERATE REPORT/CERTIFICATE
+```
+
+The goal is not merely to erase data or recover files independently.
+
+The goal is to provide an **evidence-driven, measurable, and verifiable workflow for data sanitization and forensic file recovery**.
+
+---
+
+# License
+
+This project is developed for educational, research, and **Smart India Hackathon (SIH) 2026** prototype purposes.
+
+
+# Developer Guide
+
+Welcome to the Secure Data Sanitization and File Recovery System developer guide! This document provides instructions on how to set up the local development environment, start the backend API, and run the frontend React application.
+
+---
+
+## ️ Project Structure Overview
+
+This repository is split into two primary components:
+
+1. **Backend Application (`app/`)**
+   A Python-based FastAPI server handling API requests, file parsing, and system-level interactions (such as physical and logical drive detection via PowerShell).
+2. **Frontend Application (`SIH-GUI/secureerase-sih/`)**
+   A modern React web interface built with Vite, which interacts with the Python backend.
+
+---
+
+## ️ Prerequisites
+
+Before you start, make sure you have the following installed on your machine:
+- **Node.js** (v16+ recommended) and **npm** for the frontend.
+- **Python 3.8+** for the backend server.
+- **Windows OS** with **PowerShell** (the backend script leverages PowerShell for scanning connected drives).
+- **Admin privileges** (running the backend with Administrator privileges is required if you plan on running raw drive recovery endpoints).
+
+---
+
+## Setting Up the Backend
+
+The backend is a FastAPI server located in the `app/` folder. Since the `requirements.txt` might be missing some modules or empty, you will need to install the dependencies based on imports.
+
+### 1. Create and Activate a Virtual Environment
+It is highly recommended to use a virtual environment to manage dependencies.
+Open your terminal in the root directory (where this guide is located):
 
 ```bash
-# From the repository root
+# Create a virtual environment
 python -m venv venv
 venv\Scripts\activate
 

@@ -13,7 +13,9 @@ class RawCarver:
         self.signatures = {
             "jpg": (b'\xFF\xD8\xFF', b'\xFF\xD9', 2),
             "png": (b'\x89\x50\x4E\x47\x0D\x0A\x1A\x0A', b'IEND', 8),
-            "pdf": (b'%PDF-', b'%%EOF', 5) 
+            "pdf": (b'%PDF-', b'%%EOF', 5),
+            "zip": (b'PK\x03\x04', b'PK\x05\x06', 22),
+            "docx": (b'PK\x03\x04', b'PK\x05\x06', 22)
         }
 
     def scan_image(self):
