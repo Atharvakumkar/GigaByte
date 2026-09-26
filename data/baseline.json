@@ -1,0 +1,41 @@
+{
+    "target": "\\\\.\\PhysicalDrive1",
+    "artifact_count": 7,
+    "artifacts": [
+        {
+            "filename": "carved_001.jpg",
+            "sha256": "32461d5bd1773012acef0ba15636752949bd7c2ce50f9172159d9f56cf0dd9af",
+            "status": "VALID"
+        },
+        {
+            "filename": "carved_002.png",
+            "sha256": "aad9076321854745258836de5254b6e00eba5294c9b308cc72d8516e72d7387f",
+            "status": "VALID"
+        },
+        {
+            "filename": "carved_003.jpg",
+            "sha256": "1c89436dea3760693766790b5ce4a276780c4f854dbe723c5b0f6ab3b1a23d67",
+            "status": "VALID"
+        },
+        {
+            "filename": "carved_004.jpg",
+            "sha256": "d0e540c4650d0a2b6d0089e6fa8ca4a53fa1e7a80bc9d731ca37dff8569b40f3",
+            "status": "VALID"
+        },
+        {
+            "filename": "carved_005.png",
+            "sha256": "c01202a5024dffce4985c5947102018c0c931b474c714be4f1f6a25442b10b1c",
+            "status": "VALID"
+        },
+        {
+            "filename": "carved_006.jpg",
+            "sha256": "6a6846ca7c881421ddae66691d71ba7ca87002da5ddce42a3864a85184f12a92",
+            "status": "VALID"
+        },
+        {
+            "filename": "carved_007.jpg",
+            "sha256": "2b6890f9191673b3b0c906269b87eb1f66b909792c9bd025400a62f5e8686b6c",
+            "status": "VALID"
+        }
+    ]
+}

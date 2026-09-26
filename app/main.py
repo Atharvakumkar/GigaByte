@@ -64,11 +64,6 @@ def list_drives():
                     })
     except Exception as e:
         print(f"Error getting drives: {e}")
-        # fallback mock data
-        drives = {
-            "physical": [{"id": "\\\\.\\PhysicalDrive0", "name": "Fallback Generic HDD", "size_gb": 500}],
-            "logical": [{"id": "\\\\.\\C:", "name": "Fallback OS (C:)", "size_gb": 500}]
-        }
     return drives
 
 @app.post("/api/upload")
@@ -159,8 +154,11 @@ def sanitize_endpoint(request: SanitizeRequestFrontend):
                 shutil.rmtree(output_dir)
             os.makedirs(output_dir, exist_ok=True)
             
-            engine = RecoveryEngine(image_path=target_path, output_dir=output_dir)
-            engine.run_recovery("carving")
+            try:
+                engine = RecoveryEngine(image_path=target_path, output_dir=output_dir)
+                engine.run_recovery("carving")
+            except PermissionError:
+                raise Exception(f"Permission denied to read {target_path}. Please run backend as Administrator.")
             
             artifacts = []
             validator = FileValidator(output_dir)
@@ -183,14 +181,21 @@ def sanitize_endpoint(request: SanitizeRequestFrontend):
         bm.create_baseline(target, pre_artifacts)
 
         # Step 2: Sanitize
-        if os.path.isdir(target):
+        if target.startswith("\\\\.\\"):
+            from .sanitization.image_sanitization import sanitize_disk
+            res = sanitize_disk(target)
+            success = res["success"]
+            if not success:
+                return {"success": False, "message": res.get("message", "Disk sanitization failed.")}
+        elif os.path.isdir(target):
             res = sanitize_folder(target)
             success = res["success"]
+            if not success:
+                return {"success": False, "message": "Folder sanitization failed."}
         else:
             success = sanitize_file(target)
-
-        if not success:
-             return {"success": False, "message": "Sanitization operation failed"}
+            if not success:
+                return {"success": False, "message": "File sanitization failed."}
 
         # Step 3: Post-Sanitization Recovery
         post_artifacts = scan_and_collect(target, "recovered_post")
@@ -199,12 +204,21 @@ def sanitize_endpoint(request: SanitizeRequestFrontend):
         comp = compare_results(pre_artifacts, post_artifacts)
         verdict = verify_sanitization_outcome(comp)
 
+        # Step 5: Generate Certificate
+        from .reports.certificate import CertificateGenerator
+        cert_gen = CertificateGenerator()
+        cert_path = cert_gen.generate_certificate(
+            target, len(pre_artifacts), len(post_artifacts), verdict['status'], verdict['statement']
+        )
+        cert_path_abs = os.path.abspath(cert_path)
+
         msg = f"Sanitization complete. ASSURANCE: {verdict['status']}. {verdict['statement']} (Recoverable before: {len(pre_artifacts)}, after: {len(post_artifacts)})"
         
         return {
             "success": True, 
             "message": msg,
-            "verification": verdict
+            "verification": verdict,
+            "certificate_path": cert_path_abs
         }
     except Exception as e:
         return {"success": False, "error": str(e)}

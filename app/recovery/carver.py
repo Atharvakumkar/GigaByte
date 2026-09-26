@@ -21,22 +21,33 @@ class RawCarver:
     def scan_image(self):
         print(f"[*] Starting size-limited raw carving on: {self.image_path}")
         
+        chunk_size = 40 * 1024 * 1024  # 40 MB chunks (multiple of 4096)
+        overlap = 5 * 1024 * 1024      # 5 MB overlap
+        
         try:
-            with open(self.image_path, 'rb') as f:
-                with mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ) as mm:
-                    offset = 0
-                    file_size = len(mm)
-                    
-                    while offset < file_size:
+            with open(self.image_path, 'rb', buffering=0) as f:
+                offset = 0
+                while True:
+                    try:
+                        f.seek(offset)
+                        chunk = f.read(chunk_size + overlap)
+                    except OSError:
+                        # End of drive or read error
+                        break
+                        
+                    if not chunk:
+                        break
+                        
+                    search_offset = 0
+                    while search_offset < len(chunk):
                         earliest_idx = -1
                         matched_ext = None
                         matched_header = None
                         matched_footer = None
                         matched_footer_len = 0
                         
-                        # Find the absolute closest header of any type
                         for ext, (header, footer, footer_len) in self.signatures.items():
-                            idx = mm.find(header, offset)
+                            idx = chunk.find(header, search_offset)
                             if idx != -1:
                                 if earliest_idx == -1 or idx < earliest_idx:
                                     earliest_idx = idx
@@ -44,17 +55,16 @@ class RawCarver:
                                     matched_header = header
                                     matched_footer = footer
                                     matched_footer_len = footer_len
-                        
+                                    
                         if earliest_idx == -1:
-                            break # No more files found
+                            break # No more headers in this chunk
                             
-                        # Search for the footer ONLY within the max_file_size limit
-                        search_limit = min(earliest_idx + self.max_file_size, file_size)
-                        end_idx = mm.find(matched_footer, earliest_idx, search_limit)
+                        # Found a header, look for footer
+                        end_idx = chunk.find(matched_footer, earliest_idx, earliest_idx + self.max_file_size)
                         
                         if end_idx != -1:
                             end_idx += matched_footer_len
-                            file_data = mm[earliest_idx:end_idx]
+                            file_data = chunk[earliest_idx:end_idx]
                             
                             self.carved_count += 1
                             filename = f"carved_{self.carved_count:03d}.{matched_ext}"
@@ -63,19 +73,24 @@ class RawCarver:
                             with open(filepath, 'wb') as out_file:
                                 out_file.write(file_data)
                                 
-                            print(f"[+] Recovered: {filename} (Size: {len(file_data)} bytes) at offset {earliest_idx}")
+                            absolute_offset = offset + earliest_idx
+                            print(f"[+] Recovered: {filename} (Size: {len(file_data)} bytes) at offset {absolute_offset}")
                             
-                            # Jump offset past this recovered file
-                            offset = earliest_idx + len(matched_header)
+                            search_offset = end_idx
                         else:
-                            # Footer not found within limit. 
-                            # Move just past the header to keep searching so we don't miss embedded files.
-                            offset = earliest_idx + len(matched_header)
+                            # Move past this header and keep searching
+                            search_offset = earliest_idx + len(matched_header)
+                            
+                    # Advance sector-aligned offset for the next disk read
+                    offset += chunk_size
 
             print(f"[*] Scan complete. Total files recovered: {self.carved_count}")
 
         except FileNotFoundError:
             print(f"[-] Error: Disk image '{self.image_path}' not found.")
+        except PermissionError:
+            print(f"[-] Error: Permission Denied to read '{self.image_path}'. Run as Administrator.")
+            raise
 
 if __name__ == "__main__":
     carver = RawCarver("evidence.img")

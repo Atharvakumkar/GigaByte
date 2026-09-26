@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export default function SanitizationView() {
   const [target, setTarget] = useState("drive");
@@ -12,6 +12,26 @@ export default function SanitizationView() {
   const [result, setResult] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadedTarget, setUploadedTarget] = useState(null);
+
+  const [drives, setDrives] = useState([]);
+  const [selectedDrive, setSelectedDrive] = useState(null);
+
+  useEffect(() => {
+    async function fetchDrives() {
+      try {
+        const response = await fetch("http://127.0.0.1:8000/api/drives");
+        const data = await response.json();
+        const allDrives = [...(data.physical || []), ...(data.logical || [])];
+        setDrives(allDrives);
+        if (allDrives.length > 0) {
+          setSelectedDrive(allDrives[0]);
+        }
+      } catch (err) {
+        console.error("Failed to fetch drives", err);
+      }
+    }
+    fetchDrives();
+  }, []);
 
   async function handleFileSelect(event) {
     const file = event.target.files[0];
@@ -46,13 +66,19 @@ export default function SanitizationView() {
 
   async function startSanitization() {
     try {
+      const payloadTarget = target === "drive" ? selectedDrive?.id : uploadedTarget;
+      if (!payloadTarget) {
+        alert("Please select a target first.");
+        return;
+      }
+      
       const response = await fetch("http://127.0.0.1:8000/api/sanitize", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          target: uploadedTarget,
+          target: payloadTarget,
         }),
       });
 
@@ -62,7 +88,7 @@ export default function SanitizationView() {
 
       if (data.success) {
         setStarted(true);
-        alert("Sanitization completed successfully!");
+        alert(`✅ SANITIZATION SUCCESSFUL!\n\n${data.message}\n\n📄 Certificate Generated:\n${data.certificate_path}\n\nYou can view your reports in the "data/reports" folder.`);
       } else {
         setStarted(false);
         const errorMsg = data.message || data.error || data.result;
@@ -171,27 +197,35 @@ export default function SanitizationView() {
             <div className="config-grid">
               <div className="config-left">
                 <label>Select Drive / Device</label>
-                <div className="select-box">
-                  <span>▰</span>
-                  Controlled Test Disk Image
-                  <span>⌄</span>
-                </div>
+                <select 
+                  className="select-box"
+                  style={{width: "100%", padding: "10px", background: "#1c2431", color: "white", border: "1px solid #2a3441", borderRadius: "8px"}}
+                  value={selectedDrive?.id || ""}
+                  onChange={(e) => {
+                    const drive = drives.find(d => d.id === e.target.value);
+                    if (drive) setSelectedDrive(drive);
+                  }}
+                >
+                  {drives.map(d => (
+                    <option key={d.id} value={d.id}>{d.name} ({d.size_gb} GB)</option>
+                  ))}
+                </select>
                 <div className="device-info">
                   <div>
                     <span>Model</span>
-                    <strong>Samsung SSD 970 EVO Plus</strong>
+                    <strong>{selectedDrive ? selectedDrive.name : "N/A"}</strong>
                   </div>
                   <div>
                     <span>Serial</span>
-                    <strong>S4EVNX0R123456B</strong>
+                    <strong>{selectedDrive ? selectedDrive.id : "N/A"}</strong>
                   </div>
                   <div>
                     <span>Capacity</span>
-                    <strong>500 GB</strong>
+                    <strong>{selectedDrive ? selectedDrive.size_gb + " GB" : "N/A"}</strong>
                   </div>
                   <div>
                     <span>Type</span>
-                    <strong>SSD (NVMe)</strong>
+                    <strong>Disk / Drive</strong>
                   </div>
                 </div>
 
@@ -346,19 +380,19 @@ export default function SanitizationView() {
             <div className="drive-details">
               <div>
                 <span>Model</span>
-                <strong>Controlled Test Disk Image</strong>
+                <strong>{selectedDrive ? selectedDrive.name : (selectedFile ? selectedFile.name : "N/A")}</strong>
               </div>
               <div>
                 <span>Serial</span>
-                <strong>TEST-IMAGE-001</strong>
+                <strong>{selectedDrive ? selectedDrive.id : "N/A"}</strong>
               </div>
               <div>
                 <span>Capacity</span>
-                <strong>Test Image</strong>
+                <strong>{selectedDrive ? selectedDrive.size_gb + " GB" : "N/A"}</strong>
               </div>
               <div>
                 <span>Type</span>
-                <strong>Disk Image</strong>
+                <strong>{target === "drive" ? "Disk / Drive" : "File / Image"}</strong>
               </div>
               <div>
                 <span>Status</span>
