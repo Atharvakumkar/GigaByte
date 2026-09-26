@@ -1,0 +1,19 @@
+==================================================
+          SANITIZATION CERTIFICATE
+==================================================
+
+Date/Time           : 2026-09-26T06-47-02.504803
+Target              : \\.\T:
+
+Pre-Sanitization
+Artifacts Recovered : 14
+
+Post-Sanitization
+Artifacts Recovered : 14
+
+Verification        : FAIL
+
+Statement:
+Verification FAILED. 14 previously identified artifacts remain recoverable.
+
+==================================================
