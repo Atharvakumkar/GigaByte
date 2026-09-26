@@ -25,6 +25,20 @@ Before you start, make sure you have the following installed on your machine:
 
 ---
 
+## Setting Up the Test Disc
+
+Open Windows Powershell in Administrator mode where the create-test-disk.ps is present.
+
+Enter the following commands to successfully create the Test Disc:
+
+```bash
+Set-ExecutionPolicy -Scope Process Bypass
+
+create-test-disk.ps1
+```
+
+After creating the Test Disc, add few files in it.
+
 ## Setting Up the Backend
 
 The backend is a FastAPI server located in the `app/` folder.
