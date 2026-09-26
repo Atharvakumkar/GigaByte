@@ -10,7 +10,7 @@ export default function RawFileCarvingView() {
   const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:5001/api/drives")
+    fetch("http://127.0.0.1:8000/api/drives")
       .then(res => res.json())
       .then(data => {
         setDrives(data);
@@ -29,7 +29,7 @@ export default function RawFileCarvingView() {
     formData.append("file", file);
 
     try {
-      const response = await fetch("http://127.0.0.1:5001/api/upload", {
+      const response = await fetch("http://127.0.0.1:8000/api/upload", {
         method: "POST",
         body: formData,
       });
@@ -54,7 +54,7 @@ export default function RawFileCarvingView() {
     setLogs(prev => [...prev, { type: 'INFO', text: 'Starting raw file carving...' }]);
     
     try {
-      const response = await fetch("http://127.0.0.1:5001/api/recover", {
+      const response = await fetch("http://127.0.0.1:8000/api/recover", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ method: "carving", target: selectedTarget })

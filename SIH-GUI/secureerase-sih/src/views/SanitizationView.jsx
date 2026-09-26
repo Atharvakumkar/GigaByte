@@ -23,7 +23,7 @@ export default function SanitizationView() {
     formData.append("file", file);
 
     try {
-      const response = await fetch("http://127.0.0.1:5001/api/upload", {
+      const response = await fetch("http://127.0.0.1:8000/api/upload", {
         method: "POST",
         body: formData,
       });
@@ -46,7 +46,7 @@ export default function SanitizationView() {
 
   async function startSanitization() {
     try {
-      const response = await fetch("http://127.0.0.1:5001/api/sanitize", {
+      const response = await fetch("http://127.0.0.1:8000/api/sanitize", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
